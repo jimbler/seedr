@@ -23,6 +23,7 @@ public class Plant
     public string Quantity { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public bool WildOrigin { get; set; }
+    public bool IsArchived { get; set; }
     public ExternalCatalog ExternalCatalog { get; set; }
     
     public Seasonality Seasonality { get; set; }
@@ -55,20 +56,26 @@ public class Plant
     
     private static void ParsePlantFlexibly(Plant plant, string catalogText)
     {
-        // Extract botanical name and family
-        var nameFamilyMatch = Regex.Match(catalogText, @"^(.+?)\s+\(([^)]+)\)");
-        if (nameFamilyMatch.Success)
+        // Try to match the full format: Botanical Name (Family) (Characteristics)
+        var fullFormatMatch = Regex.Match(catalogText, @"^(.+?)\s+\(([^)]+)\)\s+\(([^)]+)\)");
+        if (fullFormatMatch.Success)
         {
-            plant.BotanicalName = nameFamilyMatch.Groups[1].Value.Trim();
-            plant.Family = nameFamilyMatch.Groups[2].Value.Trim();
-        }
-        
-        // Extract characteristics section - look for the second set of parentheses
-        var characteristicsMatch = Regex.Match(catalogText, @"\([^)]+\)\s+\(([^)]+)\)");
-        if (characteristicsMatch.Success)
-        {
-            var characteristics = characteristicsMatch.Groups[1].Value.Trim();
+            plant.BotanicalName = fullFormatMatch.Groups[1].Value.Trim();
+            plant.Family = fullFormatMatch.Groups[2].Value.Trim();
+            var characteristics = fullFormatMatch.Groups[3].Value.Trim();
             ParseCharacteristics(plant, characteristics);
+        }
+        else
+        {
+            // Try to match the format without family: Botanical Name (Characteristics)
+            var noFamilyMatch = Regex.Match(catalogText, @"^(.+?)\s+\(([^)]+)\)");
+            if (noFamilyMatch.Success)
+            {
+                plant.BotanicalName = noFamilyMatch.Groups[1].Value.Trim();
+                plant.Family = ""; // No family information available
+                var characteristics = noFamilyMatch.Groups[2].Value.Trim();
+                ParseCharacteristics(plant, characteristics);
+            }
         }
         
         // Extract quantity and price

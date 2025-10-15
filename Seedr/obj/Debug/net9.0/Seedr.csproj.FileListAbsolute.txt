@@ -12,3 +12,4 @@ C:\Users\jfimb\source\repos\seedr\seedr\obj\Debug\net9.0\refint\Seedr.dll
 C:\Users\jfimb\source\repos\seedr\seedr\obj\Debug\net9.0\Seedr.pdb
 C:\Users\jfimb\source\repos\seedr\seedr\obj\Debug\net9.0\Seedr.genruntimeconfig.cache
 C:\Users\jfimb\source\repos\seedr\seedr\obj\Debug\net9.0\ref\Seedr.dll
+C:\Users\jfimb\source\repos\seedr\Seedr\obj\Debug\net9.0\Seedr.sourcelink.json
