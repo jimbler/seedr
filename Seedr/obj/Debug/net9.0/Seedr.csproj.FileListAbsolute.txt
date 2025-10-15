@@ -1,0 +1,14 @@
+C:\Users\jfimb\source\repos\seedr\seedr\bin\Debug\net9.0\Seedr.exe
+C:\Users\jfimb\source\repos\seedr\seedr\bin\Debug\net9.0\Seedr.deps.json
+C:\Users\jfimb\source\repos\seedr\seedr\bin\Debug\net9.0\Seedr.runtimeconfig.json
+C:\Users\jfimb\source\repos\seedr\seedr\bin\Debug\net9.0\Seedr.dll
+C:\Users\jfimb\source\repos\seedr\seedr\bin\Debug\net9.0\Seedr.pdb
+C:\Users\jfimb\source\repos\seedr\seedr\obj\Debug\net9.0\Seedr.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jfimb\source\repos\seedr\seedr\obj\Debug\net9.0\Seedr.AssemblyInfoInputs.cache
+C:\Users\jfimb\source\repos\seedr\seedr\obj\Debug\net9.0\Seedr.AssemblyInfo.cs
+C:\Users\jfimb\source\repos\seedr\seedr\obj\Debug\net9.0\Seedr.csproj.CoreCompileInputs.cache
+C:\Users\jfimb\source\repos\seedr\seedr\obj\Debug\net9.0\Seedr.dll
+C:\Users\jfimb\source\repos\seedr\seedr\obj\Debug\net9.0\refint\Seedr.dll
+C:\Users\jfimb\source\repos\seedr\seedr\obj\Debug\net9.0\Seedr.pdb
+C:\Users\jfimb\source\repos\seedr\seedr\obj\Debug\net9.0\Seedr.genruntimeconfig.cache
+C:\Users\jfimb\source\repos\seedr\seedr\obj\Debug\net9.0\ref\Seedr.dll
