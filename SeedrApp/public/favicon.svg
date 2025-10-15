@@ -6,16 +6,19 @@
     </linearGradient>
   </defs>
   
+  <!-- Background circle for better visibility -->
+  <circle cx="16" cy="16" r="15" fill="#f0f8e8" stroke="#2d5016" stroke-width="1" />
+  
   <!-- Seed/Bean shape -->
-  <ellipse cx="16" cy="20" rx="8" ry="6" fill="url(#seedGradient)" />
+  <ellipse cx="16" cy="20" rx="7" ry="5" fill="url(#seedGradient)" />
   
   <!-- Seed split line -->
-  <path d="M 8 20 Q 16 16 24 20" stroke="#1a3a0a" stroke-width="1" fill="none" />
+  <path d="M 9 20 Q 16 17 23 20" stroke="#1a3a0a" stroke-width="1.5" fill="none" />
   
   <!-- Small sprout -->
-  <path d="M 16 14 Q 14 10 16 8 Q 18 10 16 14" stroke="#4a7c59" stroke-width="2" fill="none" stroke-linecap="round" />
+  <path d="M 16 15 Q 14 11 16 9 Q 18 11 16 15" stroke="#4a7c59" stroke-width="2.5" fill="none" stroke-linecap="round" />
   
   <!-- Small leaves -->
-  <circle cx="14" cy="10" r="1.5" fill="#4a7c59" />
-  <circle cx="18" cy="10" r="1.5" fill="#4a7c59" />
+  <circle cx="14" cy="9" r="1.8" fill="#4a7c59" />
+  <circle cx="18" cy="9" r="1.8" fill="#4a7c59" />
 </svg>
