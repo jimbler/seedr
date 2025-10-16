@@ -35,6 +35,19 @@ public class Plant
     public Zone Zone { get; set; }
     public PreTreatment PreTreatment { get; set; }
     public Germination Germination { get; set; }
+    
+    // Image properties
+    [JsonPropertyName("imageUrl")]
+    public string ImageUrl { get; set; } = string.Empty;
+    
+    [JsonPropertyName("thumbnailUrl")]
+    public string ThumbnailUrl { get; set; } = string.Empty;
+    
+    [JsonPropertyName("imageSource")]
+    public string ImageSource { get; set; } = string.Empty;
+    
+    [JsonPropertyName("imageLicense")]
+    public string ImageLicense { get; set; } = string.Empty;
 
     /// <summary>
     /// Parses plant data from the catalog text format using flexible parsing

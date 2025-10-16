@@ -18,7 +18,8 @@ const App: React.FC = () => {
     seasonality: '',
     zone: '',
     isArchived: null,
-    showFavoritesOnly: false
+    showFavoritesOnly: false,
+    hasPhotos: false
   });
 
   useEffect(() => {
@@ -75,6 +76,11 @@ const App: React.FC = () => {
     // Apply favorites filter
     if (filters.showFavoritesOnly) {
       filtered = filtered.filter(plant => Boolean(plant.isFavorite));
+    }
+
+    // Apply photos filter
+    if (filters.hasPhotos) {
+      filtered = filtered.filter(plant => plant.imageUrl && plant.imageUrl.trim() !== '');
     }
 
     setFilteredPlants(filtered);

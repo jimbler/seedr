@@ -26,6 +26,33 @@ class Program
             await ApiCommonNameUpdater.RunApiCommonNameUpdater(args);
             Console.WriteLine("✅ Step 3 Complete: API enhancement finished\n");
 
+            // Step 4: Retrieve plant images (optional, controlled by appsettings.json)
+            Console.WriteLine("🔄 Step 4: Retrieving plant images...");
+            // Load plants to add images
+            var plantsPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)!, "..", "..", "..", "ParsedData", "all_catalogs_parsed.json");
+            plantsPath = Path.GetFullPath(plantsPath);
+            
+            if (File.Exists(plantsPath))
+            {
+                var json = File.ReadAllText(plantsPath);
+                var plants = System.Text.Json.JsonSerializer.Deserialize<List<Seedr.Models.Plant>>(json);
+                
+                if (plants != null)
+                {
+                    PlantImageRetriever.RunImageRetrieval(plants);
+                    
+                    // Save updated plant data with images
+                    var options = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
+                    var updatedJson = System.Text.Json.JsonSerializer.Serialize(plants, options);
+                    File.WriteAllText(plantsPath, updatedJson);
+                    Console.WriteLine($"✅ Step 4 Complete: Plant data with images saved\n");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"⚠️  Plants file not found, skipping image retrieval\n");
+            }
+
             Console.WriteLine("🎉 Pipeline Complete!");
             Console.WriteLine("All plant data has been fully processed and saved to ParsedData/all_catalogs_parsed.json");
         }

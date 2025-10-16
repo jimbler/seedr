@@ -760,3 +760,143 @@ body {
     min-height: 28px;
   }
 }
+
+/* Plant Image Styles */
+.plant-image-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+  background-color: #f1f5f9;
+}
+
+.plant-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: opacity 0.3s ease;
+}
+
+.plant-image.loading {
+  opacity: 0;
+}
+
+.plant-image-placeholder {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f1f5f9;
+  border-radius: 8px;
+  min-height: 200px;
+}
+
+.plant-image-placeholder img {
+  max-width: 150px;
+  opacity: 0.6;
+}
+
+.image-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.spinner-small {
+  width: 30px;
+  height: 30px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #10b981;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.image-attribution {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+  color: white;
+  padding: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.image-attribution small {
+  display: block;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+/* Plant Card Image Styles */
+.plant-card .plant-image-container {
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+.plant-card .plant-image-container:hover .plant-image {
+  opacity: 0.9;
+}
+
+/* Plant Table Image Styles */
+.plant-table .plant-image-container {
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+}
+
+.plant-table .plant-image-placeholder {
+  min-height: 60px;
+}
+
+.plant-table .plant-image-placeholder img {
+  max-width: 40px;
+}
+
+/* Image Modal/Lightbox */
+.image-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+  cursor: zoom-out;
+}
+
+.image-modal-content {
+  max-width: 90%;
+  max-height: 90%;
+  position: relative;
+  cursor: default;
+}
+
+.image-modal-content img {
+  max-width: 100%;
+  max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.image-modal-close {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  line-height: 1;
+}
+
+.image-modal-close:hover {
+  opacity: 0.8;
+}

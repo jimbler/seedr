@@ -38,6 +38,10 @@ const PlantFilters: React.FC<PlantFiltersProps> = ({ plants, filters, onFilterCh
     onFilterChange({ showFavoritesOnly: e.target.checked });
   };
 
+  const handlePhotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onFilterChange({ hasPhotos: e.target.checked });
+  };
+
   const clearFilters = () => {
     onFilterChange({
       search: '',
@@ -45,11 +49,12 @@ const PlantFilters: React.FC<PlantFiltersProps> = ({ plants, filters, onFilterCh
       seasonality: '',
       zone: '',
       isArchived: null,
-      showFavoritesOnly: false
+      showFavoritesOnly: false,
+      hasPhotos: false
     });
   };
 
-  const hasActiveFilters = filters.search || filters.family || filters.seasonality || filters.zone || filters.isArchived !== null || filters.showFavoritesOnly;
+  const hasActiveFilters = filters.search || filters.family || filters.seasonality || filters.zone || filters.isArchived !== null || filters.showFavoritesOnly || filters.hasPhotos;
 
   return (
     <div className="plant-filters">
@@ -147,6 +152,18 @@ const PlantFilters: React.FC<PlantFiltersProps> = ({ plants, filters, onFilterCh
               className="filter-checkbox"
             />
             <span className="checkbox-text">⭐ Show Favorites Only</span>
+          </label>
+        </div>
+
+        <div className="filter-group">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={filters.hasPhotos}
+              onChange={handlePhotosChange}
+              className="filter-checkbox"
+            />
+            <span className="checkbox-text">📷 Has Photos</span>
           </label>
         </div>
       </div>

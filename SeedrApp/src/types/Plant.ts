@@ -71,6 +71,10 @@ export interface Plant {
   Zone: Zone;
   PreTreatment: PreTreatment;
   Germination: Germination;
+  imageUrl: string;
+  thumbnailUrl: string;
+  imageSource: string;
+  imageLicense: string;
   isFavorite?: boolean;
 }
 
@@ -81,6 +85,7 @@ export interface PlantFilters {
   zone: string;
   isArchived: boolean | null;
   showFavoritesOnly: boolean;
+  hasPhotos: boolean;
 }
 
 export interface PlantStats {

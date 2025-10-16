@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { formatSeasonality, formatZone, formatPreTreatment, formatGermination } from '../services/plantService';
 import { FavoritesService } from '../services/favoritesService';
 import { Plant } from '../types/Plant';
+import PlantImage from './PlantImage';
 
 interface PlantCardProps {
   plant: Plant;
@@ -31,6 +32,8 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant, onToggleFavorite }) => {
 
   return (
     <div className={`plant-card ${isExpanded ? 'expanded' : ''}`}>
+      <PlantImage plant={plant} useThumbnail={true} />
+      
       <div className="card-header" onClick={toggleExpanded}>
         <div className="plant-names">
           <div className="botanical-name">{plant.BotanicalName}</div>
@@ -127,6 +130,24 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant, onToggleFavorite }) => {
             <div className="details-section">
               <h4>Description</h4>
               <p className="description">{plant.Description}</p>
+            </div>
+          )}
+          
+          {plant.imageSource && (
+            <div className="details-section">
+              <h4>Image Attribution</h4>
+              <div className="info-grid">
+                <div className="info-row">
+                  <span className="label">Source:</span>
+                  <span className="value">{plant.imageSource}</span>
+                </div>
+                {plant.imageLicense && (
+                  <div className="info-row">
+                    <span className="label">License:</span>
+                    <span className="value">{plant.imageLicense}</span>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
