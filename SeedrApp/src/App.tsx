@@ -4,6 +4,7 @@ import PlantList from './components/PlantList';
 import PlantFilters from './components/PlantFilters';
 import PlantStats from './components/PlantStats';
 import { loadPlantData } from './services/plantService';
+import { FavoritesService } from './services/favoritesService';
 import { Plant, PlantFilters as PlantFiltersType } from './types/Plant';
 
 const App: React.FC = () => {
@@ -16,14 +17,20 @@ const App: React.FC = () => {
     family: '',
     seasonality: '',
     zone: '',
-    isArchived: null
+    isArchived: null,
+    showFavoritesOnly: false
   });
 
   useEffect(() => {
+    // Initialize favorites service
+    FavoritesService.initialize();
+    
     loadPlantData()
       .then(data => {
-        setPlants(data);
-        setFilteredPlants(data);
+        // Apply favorites status to plants
+        const plantsWithFavorites = FavoritesService.applyFavoritesToPlants(data);
+        setPlants(plantsWithFavorites);
+        setFilteredPlants(plantsWithFavorites);
         setLoading(false);
       })
       .catch(err => {
@@ -39,30 +46,35 @@ const App: React.FC = () => {
     if (filters.search) {
       const searchLower = filters.search.toLowerCase();
       filtered = filtered.filter(plant => 
-        plant.botanicalName.toLowerCase().includes(searchLower) ||
-        plant.commonName.toLowerCase().includes(searchLower) ||
-        plant.family.toLowerCase().includes(searchLower)
+        plant.BotanicalName.toLowerCase().includes(searchLower) ||
+        plant.CommonName.toLowerCase().includes(searchLower) ||
+        plant.Family.toLowerCase().includes(searchLower)
       );
     }
 
     // Apply family filter
     if (filters.family) {
-      filtered = filtered.filter(plant => plant.family === filters.family);
+      filtered = filtered.filter(plant => plant.Family === filters.family);
     }
 
     // Apply seasonality filter
     if (filters.seasonality) {
-      filtered = filtered.filter(plant => plant.seasonality === parseInt(filters.seasonality));
+      filtered = filtered.filter(plant => plant.Seasonality === parseInt(filters.seasonality));
     }
 
     // Apply zone filter
     if (filters.zone) {
-      filtered = filtered.filter(plant => plant.zone === parseInt(filters.zone));
+      filtered = filtered.filter(plant => plant.Zone === parseInt(filters.zone));
     }
 
     // Apply archived filter
     if (filters.isArchived !== null) {
-      filtered = filtered.filter(plant => plant.isArchived === filters.isArchived);
+      filtered = filtered.filter(plant => plant.IsArchived === filters.isArchived);
+    }
+
+    // Apply favorites filter
+    if (filters.showFavoritesOnly) {
+      filtered = filtered.filter(plant => Boolean(plant.isFavorite));
     }
 
     setFilteredPlants(filtered);
@@ -70,6 +82,21 @@ const App: React.FC = () => {
 
   const handleFilterChange = (newFilters: Partial<PlantFiltersType>) => {
     setFilters(prev => ({ ...prev, ...newFilters }));
+  };
+
+  const handleToggleFavorite = (plantId: string) => {
+    const isNowFavorite = FavoritesService.toggleFavorite(plantId);
+    
+    // Update the plants array to reflect the new favorite status
+    setPlants(prevPlants => 
+      prevPlants.map((plant) => {
+        const currentPlantId = FavoritesService.getPlantId(plant);
+        if (currentPlantId === plantId) {
+          return { ...plant, isFavorite: isNowFavorite };
+        }
+        return plant;
+      })
+    );
   };
 
   if (loading) {
@@ -109,7 +136,10 @@ const App: React.FC = () => {
           filters={filters}
           onFilterChange={handleFilterChange}
         />
-        <PlantList plants={filteredPlants} />
+        <PlantList 
+          plants={filteredPlants} 
+          onToggleFavorite={handleToggleFavorite}
+        />
       </main>
     </div>
   );

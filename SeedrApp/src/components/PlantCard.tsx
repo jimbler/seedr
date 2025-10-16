@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { formatSeasonality, formatZone, formatPreTreatment, formatGermination } from '../services/plantService';
+import { FavoritesService } from '../services/favoritesService';
 import { Plant } from '../types/Plant';
 
 interface PlantCardProps {
   plant: Plant;
+  onToggleFavorite: (plantId: string) => void;
 }
 
-const PlantCard: React.FC<PlantCardProps> = ({ plant }) => {
+const PlantCard: React.FC<PlantCardProps> = ({ plant, onToggleFavorite }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   const toggleExpanded = () => {
@@ -14,15 +16,15 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant }) => {
   };
 
   const getStatusBadge = () => {
-    if (plant.isArchived) {
+    if (plant.IsArchived) {
       return <span className="status-badge archived">Archived</span>;
     }
     return <span className="status-badge active">Active</span>;
   };
 
   const getCommonNameDisplay = () => {
-    if (plant.commonName && plant.commonName.trim() !== '') {
-      return <div className="common-name">{plant.commonName}</div>;
+    if (plant.CommonName && plant.CommonName.trim() !== '') {
+      return <div className="common-name">{plant.CommonName}</div>;
     }
     return <div className="no-common-name">No common name available</div>;
   };
@@ -31,11 +33,21 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant }) => {
     <div className={`plant-card ${isExpanded ? 'expanded' : ''}`}>
       <div className="card-header" onClick={toggleExpanded}>
         <div className="plant-names">
-          <div className="botanical-name">{plant.botanicalName}</div>
+          <div className="botanical-name">{plant.BotanicalName}</div>
           {getCommonNameDisplay()}
         </div>
         <div className="card-badges">
           {getStatusBadge()}
+          <button
+            className={`favorite-btn ${plant.isFavorite ? 'favorited' : ''}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFavorite(FavoritesService.getPlantId(plant));
+            }}
+            title={plant.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          >
+            {plant.isFavorite ? '⭐' : '☆'}
+          </button>
           <span className="expand-icon">{isExpanded ? '−' : '+'}</span>
         </div>
       </div>
@@ -43,20 +55,20 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant }) => {
       <div className="card-basic-info">
         <div className="info-row">
           <span className="label">Family:</span>
-          <span className="value">{plant.family}</span>
+          <span className="value">{plant.Family}</span>
         </div>
         <div className="info-row">
           <span className="label">Zone:</span>
-          <span className="value">{formatZone(plant.zone)}</span>
+          <span className="value">{formatZone(plant.Zone)}</span>
         </div>
         <div className="info-row">
           <span className="label">Type:</span>
-          <span className="value">{formatSeasonality(plant.seasonality)}</span>
+          <span className="value">{formatSeasonality(plant.Seasonality)}</span>
         </div>
-        {plant.price > 0 && (
+        {plant.Price > 0 && (
           <div className="info-row">
             <span className="label">Price:</span>
-            <span className="value">${plant.price}</span>
+            <span className="value">${plant.Price}</span>
           </div>
         )}
       </div>
@@ -68,19 +80,19 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant }) => {
             <div className="info-grid">
               <div className="info-row">
                 <span className="label">Plant Code:</span>
-                <span className="value">{plant.plantCode}</span>
+                <span className="value">{plant.externalPlantCode}</span>
               </div>
               <div className="info-row">
                 <span className="label">Size:</span>
-                <span className="value">{plant.size}</span>
+                <span className="value">{plant.Size}</span>
               </div>
               <div className="info-row">
                 <span className="label">Quantity:</span>
-                <span className="value">{plant.quantity}</span>
+                <span className="value">{plant.Quantity}</span>
               </div>
               <div className="info-row">
                 <span className="label">Wild Origin:</span>
-                <span className="value">{plant.wildOrigin ? 'Yes' : 'No'}</span>
+                <span className="value">{plant.WildOrigin ? 'Yes' : 'No'}</span>
               </div>
             </div>
           </div>
@@ -90,31 +102,31 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant }) => {
             <div className="info-grid">
               <div className="info-row">
                 <span className="label">Pre-Treatment:</span>
-                <span className="value">{formatPreTreatment(plant.preTreatment)}</span>
+                <span className="value">{formatPreTreatment(plant.PreTreatment)}</span>
               </div>
               <div className="info-row">
                 <span className="label">Germination:</span>
-                <span className="value">{formatGermination(plant.germination)}</span>
+                <span className="value">{formatGermination(plant.Germination)}</span>
               </div>
-              {plant.origin && (
+              {plant.Origin && (
                 <div className="info-row">
                   <span className="label">Origin:</span>
-                  <span className="value">{plant.origin}</span>
+                  <span className="value">{plant.Origin}</span>
                 </div>
               )}
-              {plant.elevation > 0 && (
+              {plant.Elevation > 0 && (
                 <div className="info-row">
                   <span className="label">Elevation:</span>
-                  <span className="value">{plant.elevation}ft ({plant.elevationMeters}m)</span>
+                  <span className="value">{plant.Elevation}ft ({plant.ElevationMeters}m)</span>
                 </div>
               )}
             </div>
           </div>
 
-          {plant.description && (
+          {plant.Description && (
             <div className="details-section">
               <h4>Description</h4>
-              <p className="description">{plant.description}</p>
+              <p className="description">{plant.Description}</p>
             </div>
           )}
         </div>

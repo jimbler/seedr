@@ -70,8 +70,7 @@ public class CatalogParser
         // Create JSON options for pretty printing
         var options = new JsonSerializerOptions
         {
-            WriteIndented = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            WriteIndented = true
         };
 
         // Serialize to JSON

@@ -24,19 +24,19 @@ export const loadPlantData = async (): Promise<Plant[]> => {
 export const getPlantStats = (plants: Plant[]): PlantStats => {
   const stats: PlantStats = {
     total: plants.length,
-    withCommonNames: plants.filter(p => p.commonName && p.commonName.trim() !== '').length,
-    archived: plants.filter(p => p.isArchived).length,
-    active: plants.filter(p => !p.isArchived).length,
-    families: [...new Set(plants.map(p => p.family))].length,
-    zones: [...new Set(plants.map(p => p.zone))].sort((a, b) => a - b),
-    seasonalities: [...new Set(plants.map(p => p.seasonality))]
+    withCommonNames: plants.filter(p => p.CommonName && p.CommonName.trim() !== '').length,
+    archived: plants.filter(p => p.IsArchived).length,
+    active: plants.filter(p => !p.IsArchived).length,
+    families: [...new Set(plants.map(p => p.Family))].length,
+    zones: [...new Set(plants.map(p => p.Zone))].sort((a, b) => a - b),
+    seasonalities: [...new Set(plants.map(p => p.Seasonality))]
   };
   
   return stats;
 };
 
 export const getUniqueFamilies = (plants: Plant[]): string[] => {
-  return [...new Set(plants.map(p => p.family))].sort();
+  return [...new Set(plants.map(p => p.Family))].sort();
 };
 
 export const getUniqueSeasonalities = (plants: Plant[]): number[] => {

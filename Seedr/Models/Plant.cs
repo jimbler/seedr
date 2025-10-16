@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Seedr.ReferenceEnums;
 
@@ -12,7 +13,11 @@ public class Plant
     public string Description { get; set; } = string.Empty;
     
     [MaxLength(10)]
-    public string PlantCode { get; set; } = string.Empty;
+    [JsonPropertyName("externalPlantCode")]
+    public string ExternalPlantCode { get; set; } = string.Empty;
+    
+    [JsonPropertyName("plantGuid")]
+    public string PlantGuid { get; set; } = Guid.NewGuid().ToString();
     
     [MaxLength(10)]
     public string Size { get; set; } = string.Empty;
@@ -92,7 +97,7 @@ public class Plant
         var codeMatch = Regex.Match(catalogText, @"\$([0-9.]+)\s+([^\s]+)\s+\(([W]?)\)");
         if (codeMatch.Success)
         {
-            plant.PlantCode = codeMatch.Groups[2].Value.Trim();
+            plant.ExternalPlantCode = codeMatch.Groups[2].Value.Trim();
             plant.WildOrigin = !string.IsNullOrEmpty(codeMatch.Groups[3].Value);
         }
         

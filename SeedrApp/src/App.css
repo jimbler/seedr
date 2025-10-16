@@ -442,3 +442,321 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* View Toggle Styles */
+.view-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.view-toggle {
+  display: flex;
+  background: #e2e8f0;
+  border-radius: 8px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.view-btn {
+  background: transparent;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #64748b;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.view-btn:hover {
+  background: #cbd5e1;
+  color: #475569;
+}
+
+.view-btn.active {
+  background: #10b981;
+  color: white;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+/* Table Styles */
+.plant-table {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+.table-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.plants-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.plants-table th {
+  background: #f1f5f9;
+  padding: 1rem 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: #475569;
+  border-bottom: 2px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.plants-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.plants-table th.sortable:hover {
+  background: #e2e8f0;
+}
+
+.plants-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: top;
+}
+
+.plant-row {
+  transition: background-color 0.2s ease;
+}
+
+.plant-row:hover {
+  background: #f8fafc;
+}
+
+.plant-row:nth-child(even) {
+  background: #fafbfc;
+}
+
+.plant-row:nth-child(even):hover {
+  background: #f1f5f9;
+}
+
+.botanical-name {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.common-name {
+  color: #475569;
+}
+
+.no-common-name {
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.family {
+  color: #64748b;
+}
+
+.zone {
+  color: #059669;
+  font-weight: 500;
+}
+
+.seasonality {
+  color: #7c3aed;
+  font-weight: 500;
+}
+
+.price {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.status {
+  text-align: center;
+}
+
+.actions {
+  text-align: center;
+}
+
+.expand-btn {
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.expand-btn:hover {
+  background: #059669;
+  transform: scale(1.05);
+}
+
+.expanded-row {
+  background: #f8fafc;
+}
+
+.expanded-content {
+  padding: 0;
+}
+
+.plant-details {
+  padding: 1.5rem;
+  background: white;
+  border-top: 1px solid #e2e8f0;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.detail-item strong {
+  color: #374151;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.description-section {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 1rem;
+}
+
+.description-section strong {
+  color: #374151;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.plant-description {
+  color: #4b5563;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Favorites Styles */
+.favorite-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  min-height: 32px;
+}
+
+.favorite-btn:hover {
+  background: #f1f5f9;
+  transform: scale(1.1);
+}
+
+.favorite-btn.favorited {
+  color: #f59e0b;
+}
+
+.favorite-btn:not(.favorited) {
+  color: #94a3b8;
+}
+
+.favorite-btn:not(.favorited):hover {
+  color: #f59e0b;
+}
+
+/* Checkbox Styles */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  color: #374151;
+}
+
+.filter-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #10b981;
+}
+
+.checkbox-text {
+  user-select: none;
+}
+
+/* Table favorite column */
+.favorite {
+  text-align: center;
+}
+
+/* Additional responsive styles for table */
+@media (max-width: 768px) {
+  .view-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  
+  .view-toggle {
+    justify-content: center;
+  }
+  
+  .plants-table {
+    font-size: 0.8rem;
+  }
+  
+  .plants-table th,
+  .plants-table td {
+    padding: 0.5rem 0.25rem;
+  }
+  
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .favorite-btn {
+    font-size: 1rem;
+    min-width: 28px;
+    min-height: 28px;
+  }
+}

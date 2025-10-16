@@ -21,7 +21,6 @@ public class ApiCommonNameUpdater
         string json = File.ReadAllText(jsonPath);
         var plants = JsonSerializer.Deserialize<List<Plant>>(json, new JsonSerializerOptions
         {
-            PropertyNameCaseInsensitive = true
         });
         
         if (plants == null)
@@ -115,8 +114,7 @@ public class ApiCommonNameUpdater
         // Save updated data
         var options = new JsonSerializerOptions
         {
-            WriteIndented = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            WriteIndented = true
         };
         
         string updatedJson = JsonSerializer.Serialize(plants, options);

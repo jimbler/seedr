@@ -34,17 +34,22 @@ const PlantFilters: React.FC<PlantFiltersProps> = ({ plants, filters, onFilterCh
     onFilterChange({ isArchived: value });
   };
 
+  const handleFavoritesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onFilterChange({ showFavoritesOnly: e.target.checked });
+  };
+
   const clearFilters = () => {
     onFilterChange({
       search: '',
       family: '',
       seasonality: '',
       zone: '',
-      isArchived: null
+      isArchived: null,
+      showFavoritesOnly: false
     });
   };
 
-  const hasActiveFilters = filters.search || filters.family || filters.seasonality || filters.zone || filters.isArchived !== null;
+  const hasActiveFilters = filters.search || filters.family || filters.seasonality || filters.zone || filters.isArchived !== null || filters.showFavoritesOnly;
 
   return (
     <div className="plant-filters">
@@ -131,6 +136,18 @@ const PlantFilters: React.FC<PlantFiltersProps> = ({ plants, filters, onFilterCh
             <option value="false">Active Only</option>
             <option value="true">Archived Only</option>
           </select>
+        </div>
+
+        <div className="filter-group">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={filters.showFavoritesOnly}
+              onChange={handleFavoritesChange}
+              className="filter-checkbox"
+            />
+            <span className="checkbox-text">⭐ Show Favorites Only</span>
+          </label>
         </div>
       </div>
     </div>

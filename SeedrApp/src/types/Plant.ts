@@ -52,24 +52,26 @@ export enum ExternalCatalog {
 }
 
 export interface Plant {
-  commonName: string;
-  botanicalName: string;
-  family: string;
-  description: string;
-  plantCode: string;
-  size: string;
-  origin: string;
-  elevation: number;
-  elevationMeters: number;
-  quantity: string;
-  price: number;
-  wildOrigin: boolean;
-  isArchived: boolean;
-  externalCatalog: ExternalCatalog;
-  seasonality: Seasonality;
-  zone: Zone;
-  preTreatment: PreTreatment;
-  germination: Germination;
+  CommonName: string;
+  BotanicalName: string;
+  Family: string;
+  Description: string;
+  externalPlantCode: string;
+  plantGuid: string;
+  Size: string;
+  Origin: string;
+  Elevation: number;
+  ElevationMeters: number;
+  Quantity: string;
+  Price: number;
+  WildOrigin: boolean;
+  IsArchived: boolean;
+  ExternalCatalog: ExternalCatalog;
+  Seasonality: Seasonality;
+  Zone: Zone;
+  PreTreatment: PreTreatment;
+  Germination: Germination;
+  isFavorite?: boolean;
 }
 
 export interface PlantFilters {
@@ -78,6 +80,7 @@ export interface PlantFilters {
   seasonality: string;
   zone: string;
   isArchived: boolean | null;
+  showFavoritesOnly: boolean;
 }
 
 export interface PlantStats {
