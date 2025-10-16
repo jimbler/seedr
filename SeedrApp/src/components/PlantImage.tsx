@@ -36,7 +36,7 @@ const PlantImage: React.FC<PlantImageProps> = ({
       <div className={`plant-image-placeholder ${className}`} onClick={onClick}>
         <img 
           src="/plant-placeholder.svg" 
-          alt="No image available"
+          alt="Plant placeholder"
           loading="lazy"
         />
       </div>
