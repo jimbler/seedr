@@ -2,6 +2,8 @@
 
 A comprehensive plant seed database system consisting of a .NET data processing pipeline and a React web application for browsing and managing plant information.
 
+**🌐 [View Live Demo](https://mrseedr.netlify.app/)** - Try the deployed SeedrApp to browse, filter, and favorite plants from the catalog.
+
 ---
 
 ## 📦 Project Overview
