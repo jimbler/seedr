@@ -1,4 +1,23 @@
 import React, { useState } from 'react';
+import {
+  Box,
+  Paper,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  ToggleButtonGroup,
+  ToggleButton,
+  Stack,
+  IconButton,
+  Grid,
+  SelectChangeEvent,
+} from '@mui/material';
+import ViewModuleIcon from '@mui/icons-material/ViewModule';
+import ViewListIcon from '@mui/icons-material/ViewList';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import PlantCard from './PlantCard';
 import PlantTable from './PlantTable';
 import { FavoritesService } from '../services/favoritesService';
@@ -50,81 +69,100 @@ const PlantList: React.FC<PlantListProps> = ({ plants, onToggleFavorite }) => {
 
   if (plants.length === 0) {
     return (
-      <div className="plant-list">
-        <div className="no-plants">
-          <h3>No plants found</h3>
-          <p>Try adjusting your filters to see more results.</p>
-        </div>
-      </div>
+      <Box sx={{ textAlign: 'center', py: 8 }}>
+        <Typography variant="h5" color="text.secondary" gutterBottom>
+          No plants found
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Try adjusting your filters to see more results.
+        </Typography>
+      </Box>
     );
   }
 
   return (
-    <div className="plant-list">
-      <div className="list-header">
-        <h3>🌿 Plant Collection ({plants.length} plants)</h3>
-        <div className="view-controls">
-          <div className="view-toggle">
-            <button
-              className={`view-btn ${viewMode === 'cards' ? 'active' : ''}`}
-              onClick={() => setViewMode('cards')}
-              title="Card view"
+    <Box>
+      <Paper sx={{ p: 2, mb: 3 }}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={2}
+          alignItems={{ xs: 'stretch', sm: 'center' }}
+          justifyContent="space-between"
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography variant="h6" component="h2">
+              Plant Collection
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              ({plants.length} {plants.length === 1 ? 'plant' : 'plants'})
+            </Typography>
+          </Box>
+
+          <Stack direction="row" spacing={2} alignItems="center">
+            <ToggleButtonGroup
+              value={viewMode}
+              exclusive
+              onChange={(_, newMode) => newMode && setViewMode(newMode)}
+              size="small"
             >
-              📋 Cards
-            </button>
-            <button
-              className={`view-btn ${viewMode === 'table' ? 'active' : ''}`}
-              onClick={() => setViewMode('table')}
-              title="Table view"
-            >
-              📊 Table
-            </button>
-          </div>
-          {viewMode === 'cards' && (
-            <div className="sort-controls">
-              <label htmlFor="sort-select">Sort by:</label>
-              <select
-                id="sort-select"
-                value={sortBy}
-                onChange={(e) => handleSortChange(e.target.value as SortField)}
-                className="sort-select"
-              >
-                <option value="BotanicalName">Botanical Name</option>
-                <option value="CommonName">Common Name</option>
-                <option value="Family">Family</option>
-                <option value="Zone">Hardiness Zone</option>
-                <option value="Seasonality">Seasonality</option>
-                <option value="Price">Price</option>
-              </select>
-              <button
-                className="sort-order-btn"
-                onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                title={`Sort ${sortOrder === 'asc' ? 'Descending' : 'Ascending'}`}
-              >
-                {sortOrder === 'asc' ? '↑' : '↓'}
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
+              <ToggleButton value="cards" aria-label="card view">
+                <ViewModuleIcon fontSize="small" sx={{ mr: 0.5 }} />
+                Cards
+              </ToggleButton>
+              <ToggleButton value="table" aria-label="table view">
+                <ViewListIcon fontSize="small" sx={{ mr: 0.5 }} />
+                Table
+              </ToggleButton>
+            </ToggleButtonGroup>
+
+            {viewMode === 'cards' && (
+              <Stack direction="row" spacing={1} alignItems="center">
+                <FormControl size="small" sx={{ minWidth: 150 }}>
+                  <InputLabel>Sort by</InputLabel>
+                  <Select
+                    value={sortBy}
+                    onChange={(e: SelectChangeEvent) => handleSortChange(e.target.value as SortField)}
+                    label="Sort by"
+                  >
+                    <MenuItem value="BotanicalName">Botanical Name</MenuItem>
+                    <MenuItem value="CommonName">Common Name</MenuItem>
+                    <MenuItem value="Family">Family</MenuItem>
+                    <MenuItem value="Zone">Zone</MenuItem>
+                    <MenuItem value="Seasonality">Seasonality</MenuItem>
+                    <MenuItem value="Price">Price</MenuItem>
+                  </Select>
+                </FormControl>
+                <IconButton
+                  size="small"
+                  onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                  title={`Sort ${sortOrder === 'asc' ? 'Descending' : 'Ascending'}`}
+                >
+                  {sortOrder === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
+                </IconButton>
+              </Stack>
+            )}
+          </Stack>
+        </Stack>
+      </Paper>
 
       {viewMode === 'cards' ? (
-        <div className="plants-grid">
+        <Grid container spacing={3}>
           {sortedPlants.map((plant) => (
-            <PlantCard 
-              key={FavoritesService.getPlantId(plant)} 
-              plant={plant} 
-              onToggleFavorite={onToggleFavorite}
-            />
+            <Grid item xs={12} sm={6} lg={4} key={FavoritesService.getPlantId(plant)}>
+              <PlantCard 
+                plant={plant} 
+                onToggleFavorite={onToggleFavorite}
+              />
+            </Grid>
           ))}
-        </div>
+        </Grid>
       ) : (
         <PlantTable 
           plants={plants} 
           onToggleFavorite={onToggleFavorite}
         />
       )}
-    </div>
+    </Box>
   );
 };
 

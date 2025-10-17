@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Box, Skeleton, Typography } from '@mui/material';
+import ImageIcon from '@mui/icons-material/Image';
 import { Plant } from '../types/Plant';
 
 interface PlantImageProps {
@@ -33,42 +35,85 @@ const PlantImage: React.FC<PlantImageProps> = ({
 
   if (!hasImage) {
     return (
-      <div className={`plant-image-placeholder ${className}`} onClick={onClick}>
-        <img 
-          src="/plant-placeholder.svg" 
-          alt="Plant placeholder"
-          loading="lazy"
-        />
-      </div>
+      <Box
+        className={className}
+        onClick={onClick}
+        sx={{
+          width: '100%',
+          height: useThumbnail ? 200 : 300,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'rgba(0, 0, 0, 0.04)',
+          cursor: onClick ? 'pointer' : 'default',
+          borderRadius: 1,
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <ImageIcon sx={{ fontSize: 60, color: 'text.disabled' }} />
+      </Box>
     );
   }
 
   return (
-    <div className={`plant-image-container ${className}`} onClick={onClick}>
+    <Box
+      className={className}
+      onClick={onClick}
+      sx={{
+        width: '100%',
+        height: useThumbnail ? 200 : 300,
+        position: 'relative',
+        overflow: 'hidden',
+        cursor: onClick ? 'pointer' : 'default',
+        borderRadius: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.02)',
+      }}
+    >
       {isLoading && (
-        <div className="image-loading">
-          <div className="spinner-small"></div>
-        </div>
+        <Skeleton
+          variant="rectangular"
+          width="100%"
+          height="100%"
+          animation="wave"
+          sx={{ position: 'absolute', top: 0, left: 0 }}
+        />
       )}
-      <img
+      <Box
+        component="img"
         src={imageUrl}
         alt={plant.CommonName || plant.BotanicalName}
         onLoad={handleImageLoad}
         onError={handleImageError}
         loading="lazy"
-        className={`plant-image ${isLoading ? 'loading' : ''}`}
+        sx={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          display: isLoading ? 'none' : 'block',
+        }}
       />
-      {showLicense && plant.imageSource && (
-        <div className="image-attribution">
-          <small>
+      {showLicense && plant.imageSource && !isLoading && (
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            color: 'white',
+            padding: 0.5,
+            fontSize: '0.7rem',
+          }}
+        >
+          <Typography variant="caption" sx={{ color: 'white' }}>
             Source: {plant.imageSource}
             {plant.imageLicense && ` | ${plant.imageLicense}`}
-          </small>
-        </div>
+          </Typography>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 
 export default PlantImage;
-

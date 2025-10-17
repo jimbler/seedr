@@ -1,4 +1,27 @@
 import React from 'react';
+import {
+  Card,
+  CardContent,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormControlLabel,
+  Checkbox,
+  Button,
+  Typography,
+  Box,
+  Chip,
+  Stack,
+  InputAdornment,
+  SelectChangeEvent,
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import StarIcon from '@mui/icons-material/Star';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import { getUniqueFamilies, getUniqueSeasonalities, getUniqueZones, formatSeasonality, formatZone } from '../services/plantService';
 import { Plant, PlantFilters as PlantFiltersType } from '../types/Plant';
 
@@ -17,19 +40,19 @@ const PlantFilters: React.FC<PlantFiltersProps> = ({ plants, filters, onFilterCh
     onFilterChange({ search: e.target.value });
   };
 
-  const handleFamilyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleFamilyChange = (e: SelectChangeEvent<string>) => {
     onFilterChange({ family: e.target.value });
   };
 
-  const handleSeasonalityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSeasonalityChange = (e: SelectChangeEvent<string>) => {
     onFilterChange({ seasonality: e.target.value });
   };
 
-  const handleZoneChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleZoneChange = (e: SelectChangeEvent<string>) => {
     onFilterChange({ zone: e.target.value });
   };
 
-  const handleArchivedChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleArchivedChange = (e: SelectChangeEvent<string>) => {
     const value = e.target.value === 'all' ? null : e.target.value === 'true';
     onFilterChange({ isArchived: value });
   };
@@ -55,119 +78,153 @@ const PlantFilters: React.FC<PlantFiltersProps> = ({ plants, filters, onFilterCh
   };
 
   const hasActiveFilters = filters.search || filters.family || filters.seasonality || filters.zone || filters.isArchived !== null || filters.showFavoritesOnly || filters.hasPhotos;
+  
+  const activeFilterCount = [
+    filters.search,
+    filters.family,
+    filters.seasonality,
+    filters.zone,
+    filters.isArchived !== null,
+    filters.showFavoritesOnly,
+    filters.hasPhotos
+  ].filter(Boolean).length;
 
   return (
-    <div className="plant-filters">
-      <div className="filters-header">
-        <h3>🔍 Filters</h3>
-        {hasActiveFilters && (
-          <button className="clear-filters-btn" onClick={clearFilters}>
-            Clear All
-          </button>
-        )}
-      </div>
-      
-      <div className="filters-grid">
-        <div className="filter-group">
-          <label htmlFor="search">Search</label>
-          <input
-            type="text"
-            id="search"
+    <Card sx={{ position: 'sticky', top: 80 }}>
+      <CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <FilterListIcon color="primary" />
+            <Typography variant="h6">Filters</Typography>
+            {activeFilterCount > 0 && (
+              <Chip 
+                label={activeFilterCount} 
+                size="small" 
+                color="primary" 
+                sx={{ ml: 1 }}
+              />
+            )}
+          </Box>
+          {hasActiveFilters && (
+            <Button
+              size="small"
+              startIcon={<ClearIcon />}
+              onClick={clearFilters}
+              variant="outlined"
+            >
+              Clear
+            </Button>
+          )}
+        </Box>
+        
+        <Stack spacing={2.5}>
+          <TextField
+            fullWidth
+            variant="outlined"
             placeholder="Search by name or family..."
             value={filters.search}
             onChange={handleSearchChange}
-            className="filter-input"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon color="action" />
+                </InputAdornment>
+              ),
+            }}
+            size="small"
           />
-        </div>
 
-        <div className="filter-group">
-          <label htmlFor="family">Family</label>
-          <select
-            id="family"
-            value={filters.family}
-            onChange={handleFamilyChange}
-            className="filter-select"
-          >
-            <option value="">All Families</option>
-            {families.map(family => (
-              <option key={family} value={family}>{family}</option>
-            ))}
-          </select>
-        </div>
+          <FormControl fullWidth size="small">
+            <InputLabel>Family</InputLabel>
+            <Select
+              value={filters.family}
+              onChange={handleFamilyChange}
+              label="Family"
+            >
+              <MenuItem value="">All Families</MenuItem>
+              {families.map(family => (
+                <MenuItem key={family} value={family}>{family}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-        <div className="filter-group">
-          <label htmlFor="seasonality">Seasonality</label>
-          <select
-            id="seasonality"
-            value={filters.seasonality}
-            onChange={handleSeasonalityChange}
-            className="filter-select"
-          >
-            <option value="">All Types</option>
-            {seasonalities.map(seasonality => (
-              <option key={seasonality} value={seasonality}>
-                {formatSeasonality(seasonality)}
-              </option>
-            ))}
-          </select>
-        </div>
+          <FormControl fullWidth size="small">
+            <InputLabel>Seasonality</InputLabel>
+            <Select
+              value={filters.seasonality}
+              onChange={handleSeasonalityChange}
+              label="Seasonality"
+            >
+              <MenuItem value="">All Types</MenuItem>
+              {seasonalities.map(seasonality => (
+                <MenuItem key={seasonality} value={seasonality}>
+                  {formatSeasonality(seasonality)}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-        <div className="filter-group">
-          <label htmlFor="zone">Hardiness Zone</label>
-          <select
-            id="zone"
-            value={filters.zone}
-            onChange={handleZoneChange}
-            className="filter-select"
-          >
-            <option value="">All Zones</option>
-            {zones.map(zone => (
-              <option key={zone} value={zone}>
-                {formatZone(zone)}
-              </option>
-            ))}
-          </select>
-        </div>
+          <FormControl fullWidth size="small">
+            <InputLabel>Hardiness Zone</InputLabel>
+            <Select
+              value={filters.zone}
+              onChange={handleZoneChange}
+              label="Hardiness Zone"
+            >
+              <MenuItem value="">All Zones</MenuItem>
+              {zones.map(zone => (
+                <MenuItem key={zone} value={zone}>
+                  {formatZone(zone)}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-        <div className="filter-group">
-          <label htmlFor="archived">Status</label>
-          <select
-            id="archived"
-            value={filters.isArchived === null ? 'all' : filters.isArchived.toString()}
-            onChange={handleArchivedChange}
-            className="filter-select"
-          >
-            <option value="all">All Plants</option>
-            <option value="false">Active Only</option>
-            <option value="true">Archived Only</option>
-          </select>
-        </div>
+          <FormControl fullWidth size="small">
+            <InputLabel>Status</InputLabel>
+            <Select
+              value={filters.isArchived === null ? 'all' : filters.isArchived.toString()}
+              onChange={handleArchivedChange}
+              label="Status"
+            >
+              <MenuItem value="all">All Plants</MenuItem>
+              <MenuItem value="false">Active Only</MenuItem>
+              <MenuItem value="true">Archived Only</MenuItem>
+            </Select>
+          </FormControl>
 
-        <div className="filter-group">
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={filters.showFavoritesOnly}
-              onChange={handleFavoritesChange}
-              className="filter-checkbox"
+          <Box>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={filters.showFavoritesOnly}
+                  onChange={handleFavoritesChange}
+                  icon={<StarIcon />}
+                  checkedIcon={<StarIcon />}
+                  color="primary"
+                />
+              }
+              label="Show Favorites Only"
             />
-            <span className="checkbox-text">⭐ Show Favorites Only</span>
-          </label>
-        </div>
+          </Box>
 
-        <div className="filter-group">
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={filters.hasPhotos}
-              onChange={handlePhotosChange}
-              className="filter-checkbox"
+          <Box>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={filters.hasPhotos}
+                  onChange={handlePhotosChange}
+                  icon={<PhotoCameraIcon />}
+                  checkedIcon={<PhotoCameraIcon />}
+                  color="primary"
+                />
+              }
+              label="Has Photos"
             />
-            <span className="checkbox-text">📷 Has Photos</span>
-          </label>
-        </div>
-      </div>
-    </div>
+          </Box>
+        </Stack>
+      </CardContent>
+    </Card>
   );
 };
 

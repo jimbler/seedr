@@ -1,7 +1,28 @@
 import React, { useState } from 'react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Chip,
+  Collapse,
+  Box,
+  Typography,
+  TableSortLabel,
+  Avatar,
+} from '@mui/material';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import StarIcon from '@mui/icons-material/Star';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { formatSeasonality, formatZone, formatPreTreatment, formatGermination } from '../services/plantService';
 import { FavoritesService } from '../services/favoritesService';
 import { Plant } from '../types/Plant';
+import PlantImage from './PlantImage';
 
 interface PlantTableProps {
   plants: Plant[];
@@ -11,10 +32,204 @@ interface PlantTableProps {
 type SortField = keyof Plant;
 type SortOrder = 'asc' | 'desc';
 
+interface RowProps {
+  plant: Plant;
+  onToggleFavorite: (plantId: string) => void;
+}
+
+const Row: React.FC<RowProps> = ({ plant, onToggleFavorite }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const plantId = FavoritesService.getPlantId(plant);
+
+  return (
+    <>
+      <TableRow hover>
+        <TableCell padding="checkbox">
+          <IconButton
+            size="small"
+            onClick={() => setIsExpanded(!isExpanded)}
+            aria-label="expand row"
+          >
+            {isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+        <TableCell padding="checkbox">
+          <Avatar
+            variant="rounded"
+            sx={{ width: 40, height: 40 }}
+            src={plant.thumbnailUrl}
+            alt={plant.BotanicalName}
+          >
+            {plant.BotanicalName.charAt(0)}
+          </Avatar>
+        </TableCell>
+        <TableCell>
+          <Typography variant="body2" fontWeight={500} sx={{ fontStyle: 'italic' }}>
+            {plant.BotanicalName}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          {plant.CommonName && plant.CommonName.trim() !== '' ? (
+            <Typography variant="body2">{plant.CommonName}</Typography>
+          ) : (
+            <Typography variant="body2" color="text.disabled" sx={{ fontStyle: 'italic' }}>
+              No common name
+            </Typography>
+          )}
+        </TableCell>
+        <TableCell>
+          <Typography variant="body2">{plant.Family}</Typography>
+        </TableCell>
+        <TableCell align="center">
+          <Typography variant="body2">{formatZone(plant.Zone)}</Typography>
+        </TableCell>
+        <TableCell>
+          <Typography variant="body2">{formatSeasonality(plant.Seasonality)}</Typography>
+        </TableCell>
+        <TableCell align="right">
+          <Typography variant="body2" fontWeight={500} color="success.main">
+            ${plant.Price.toFixed(2)}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Chip
+            label={plant.IsArchived ? 'Archived' : 'Active'}
+            size="small"
+            color={plant.IsArchived ? 'warning' : 'success'}
+          />
+        </TableCell>
+        <TableCell padding="checkbox">
+          <IconButton
+            size="small"
+            onClick={() => onToggleFavorite(plantId)}
+            title={plant.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          >
+            {plant.isFavorite ? (
+              <StarIcon sx={{ color: 'warning.main' }} />
+            ) : (
+              <StarBorderIcon />
+            )}
+          </IconButton>
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+          <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+            <Box sx={{ py: 3, px: 2, backgroundColor: 'rgba(61, 107, 31, 0.02)' }}>
+              <Box sx={{ display: 'flex', gap: 3, mb: 2 }}>
+                <Box sx={{ width: 150, flexShrink: 0 }}>
+                  <PlantImage plant={plant} useThumbnail={false} />
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="subtitle2" fontWeight={600} gutterBottom color="primary">
+                    Plant Details
+                  </Typography>
+                  <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 1.5 }}>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        Plant Code:
+                      </Typography>
+                      <Typography variant="body2">{plant.externalPlantCode}</Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        Size:
+                      </Typography>
+                      <Typography variant="body2">{plant.Size || 'N/A'}</Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        Origin:
+                      </Typography>
+                      <Typography variant="body2">{plant.Origin || 'N/A'}</Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        Elevation:
+                      </Typography>
+                      <Typography variant="body2">
+                        {plant.Elevation} ft / {plant.ElevationMeters} m
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        Quantity:
+                      </Typography>
+                      <Typography variant="body2">{plant.Quantity}</Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        Wild Origin:
+                      </Typography>
+                      <Typography variant="body2">{plant.WildOrigin ? 'Yes' : 'No'}</Typography>
+                    </Box>
+                  </Box>
+
+                  <Typography variant="subtitle2" fontWeight={600} gutterBottom color="primary" sx={{ mt: 2 }}>
+                    Growing Information
+                  </Typography>
+                  <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 1.5 }}>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        Pre-Treatment:
+                      </Typography>
+                      <Typography variant="body2">{formatPreTreatment(plant.PreTreatment)}</Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        Germination:
+                      </Typography>
+                      <Typography variant="body2">{formatGermination(plant.Germination)}</Typography>
+                    </Box>
+                  </Box>
+
+                  {plant.Description && (
+                    <>
+                      <Typography variant="subtitle2" fontWeight={600} gutterBottom color="primary" sx={{ mt: 2 }}>
+                        Description
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+                        {plant.Description}
+                      </Typography>
+                    </>
+                  )}
+
+                  {plant.imageSource && (
+                    <>
+                      <Typography variant="subtitle2" fontWeight={600} gutterBottom color="primary" sx={{ mt: 2 }}>
+                        Image Attribution
+                      </Typography>
+                      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 1 }}>
+                        <Box>
+                          <Typography variant="caption" color="text.secondary">
+                            Source:
+                          </Typography>
+                          <Typography variant="body2">{plant.imageSource}</Typography>
+                        </Box>
+                        {plant.imageLicense && (
+                          <Box>
+                            <Typography variant="caption" color="text.secondary">
+                              License:
+                            </Typography>
+                            <Typography variant="body2">{plant.imageLicense}</Typography>
+                          </Box>
+                        )}
+                      </Box>
+                    </>
+                  )}
+                </Box>
+              </Box>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </>
+  );
+};
+
 const PlantTable: React.FC<PlantTableProps> = ({ plants, onToggleFavorite }) => {
   const [sortBy, setSortBy] = useState<SortField>('BotanicalName');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
-  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
 
   const handleSortChange = (newSortBy: SortField) => {
     if (sortBy === newSortBy) {
@@ -23,16 +238,6 @@ const PlantTable: React.FC<PlantTableProps> = ({ plants, onToggleFavorite }) => 
       setSortBy(newSortBy);
       setSortOrder('asc');
     }
-  };
-
-  const toggleRowExpansion = (plantId: string) => {
-    const newExpandedRows = new Set(expandedRows);
-    if (newExpandedRows.has(plantId)) {
-      newExpandedRows.delete(plantId);
-    } else {
-      newExpandedRows.add(plantId);
-    }
-    setExpandedRows(newExpandedRows);
   };
 
   const sortedPlants = [...plants].sort((a, b) => {
@@ -56,175 +261,95 @@ const PlantTable: React.FC<PlantTableProps> = ({ plants, onToggleFavorite }) => 
     }
   });
 
-  const getSortIcon = (field: SortField) => {
-    if (sortBy !== field) return '↕️';
-    return sortOrder === 'asc' ? '↑' : '↓';
-  };
-
-  const getStatusBadge = (plant: Plant) => {
-    if (plant.IsArchived) {
-      return <span className="status-badge archived">Archived</span>;
-    }
-    return <span className="status-badge active">Active</span>;
-  };
-
   if (plants.length === 0) {
     return (
-      <div className="plant-table">
-        <div className="no-plants">
-          <h3>No plants found</h3>
-          <p>Try adjusting your filters to see more results.</p>
-        </div>
-      </div>
+      <Box sx={{ textAlign: 'center', py: 8 }}>
+        <Typography variant="h5" color="text.secondary" gutterBottom>
+          No plants found
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Try adjusting your filters to see more results.
+        </Typography>
+      </Box>
     );
   }
 
   return (
-    <div className="plant-table">
-      <div className="table-header">
-        <h3>🌿 Plant Collection ({plants.length} plants)</h3>
-      </div>
-      
-      <div className="table-container">
-        <table className="plants-table">
-          <thead>
-            <tr>
-              <th 
-                className="sortable" 
+    <TableContainer component={Paper}>
+      <Table stickyHeader>
+        <TableHead>
+          <TableRow>
+            <TableCell padding="checkbox" />
+            <TableCell padding="checkbox" />
+            <TableCell>
+              <TableSortLabel
+                active={sortBy === 'BotanicalName'}
+                direction={sortBy === 'BotanicalName' ? sortOrder : 'asc'}
                 onClick={() => handleSortChange('BotanicalName')}
-                title="Click to sort"
               >
-                Botanical Name {getSortIcon('BotanicalName')}
-              </th>
-              <th 
-                className="sortable" 
+                Botanical Name
+              </TableSortLabel>
+            </TableCell>
+            <TableCell>
+              <TableSortLabel
+                active={sortBy === 'CommonName'}
+                direction={sortBy === 'CommonName' ? sortOrder : 'asc'}
                 onClick={() => handleSortChange('CommonName')}
-                title="Click to sort"
               >
-                Common Name {getSortIcon('CommonName')}
-              </th>
-              <th 
-                className="sortable" 
+                Common Name
+              </TableSortLabel>
+            </TableCell>
+            <TableCell>
+              <TableSortLabel
+                active={sortBy === 'Family'}
+                direction={sortBy === 'Family' ? sortOrder : 'asc'}
                 onClick={() => handleSortChange('Family')}
-                title="Click to sort"
               >
-                Family {getSortIcon('Family')}
-              </th>
-              <th 
-                className="sortable" 
+                Family
+              </TableSortLabel>
+            </TableCell>
+            <TableCell align="center">
+              <TableSortLabel
+                active={sortBy === 'Zone'}
+                direction={sortBy === 'Zone' ? sortOrder : 'asc'}
                 onClick={() => handleSortChange('Zone')}
-                title="Click to sort"
               >
-                Zone {getSortIcon('Zone')}
-              </th>
-              <th 
-                className="sortable" 
+                Zone
+              </TableSortLabel>
+            </TableCell>
+            <TableCell>
+              <TableSortLabel
+                active={sortBy === 'Seasonality'}
+                direction={sortBy === 'Seasonality' ? sortOrder : 'asc'}
                 onClick={() => handleSortChange('Seasonality')}
-                title="Click to sort"
               >
-                Seasonality {getSortIcon('Seasonality')}
-              </th>
-              <th 
-                className="sortable" 
+                Type
+              </TableSortLabel>
+            </TableCell>
+            <TableCell align="right">
+              <TableSortLabel
+                active={sortBy === 'Price'}
+                direction={sortBy === 'Price' ? sortOrder : 'asc'}
                 onClick={() => handleSortChange('Price')}
-                title="Click to sort"
               >
-                Price {getSortIcon('Price')}
-              </th>
-              <th>Status</th>
-              <th>Favorite</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedPlants.map((plant) => {
-              const plantId = FavoritesService.getPlantId(plant);
-              const isExpanded = expandedRows.has(plantId);
-              
-              return (
-                <React.Fragment key={plantId}>
-                  <tr className="plant-row">
-                    <td className="botanical-name">
-                      <strong>{plant.BotanicalName}</strong>
-                    </td>
-                    <td className="common-name">
-                      {plant.CommonName && plant.CommonName.trim() !== '' 
-                        ? plant.CommonName 
-                        : <span className="no-common-name">No common name</span>
-                      }
-                    </td>
-                    <td className="family">{plant.Family}</td>
-                    <td className="zone">{formatZone(plant.Zone)}</td>
-                    <td className="seasonality">{formatSeasonality(plant.Seasonality)}</td>
-                    <td className="price">${plant.Price.toFixed(2)}</td>
-                    <td className="status">{getStatusBadge(plant)}</td>
-                    <td className="favorite">
-                      <button
-                        className={`favorite-btn ${plant.isFavorite ? 'favorited' : ''}`}
-                        onClick={() => onToggleFavorite(plantId)}
-                        title={plant.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-                      >
-                        {plant.isFavorite ? '⭐' : '☆'}
-                      </button>
-                    </td>
-                    <td className="actions">
-                      <button 
-                        className="expand-btn"
-                        onClick={() => toggleRowExpansion(plantId)}
-                        title={isExpanded ? 'Collapse details' : 'Expand details'}
-                      >
-                        {isExpanded ? '−' : '+'}
-                      </button>
-                    </td>
-                  </tr>
-                  {isExpanded && (
-                    <tr className="expanded-row">
-                      <td colSpan={9} className="expanded-content">
-                        <div className="plant-details">
-                          <div className="details-grid">
-                            <div className="detail-item">
-                              <strong>Plant Code:</strong> {plant.externalPlantCode}
-                            </div>
-                            <div className="detail-item">
-                              <strong>Size:</strong> {plant.Size || 'N/A'}
-                            </div>
-                            <div className="detail-item">
-                              <strong>Origin:</strong> {plant.Origin || 'N/A'}
-                            </div>
-                            <div className="detail-item">
-                              <strong>Elevation:</strong> {plant.Elevation} ft / {plant.ElevationMeters} m
-                            </div>
-                            <div className="detail-item">
-                              <strong>Quantity:</strong> {plant.Quantity}
-                            </div>
-                            <div className="detail-item">
-                              <strong>Wild Origin:</strong> {plant.WildOrigin ? 'Yes' : 'No'}
-                            </div>
-                            <div className="detail-item">
-                              <strong>External Catalog:</strong> {plant.ExternalCatalog}
-                            </div>
-                            <div className="detail-item">
-                              <strong>Pre-Treatment:</strong> {formatPreTreatment(plant.PreTreatment)}
-                            </div>
-                            <div className="detail-item">
-                              <strong>Germination:</strong> {formatGermination(plant.Germination)}
-                            </div>
-                          </div>
-                          <div className="description-section">
-                            <strong>Description:</strong>
-                            <p className="plant-description">{plant.Description}</p>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
+                Price
+              </TableSortLabel>
+            </TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell padding="checkbox">Favorite</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {sortedPlants.map((plant) => (
+            <Row
+              key={FavoritesService.getPlantId(plant)}
+              plant={plant}
+              onToggleFavorite={onToggleFavorite}
+            />
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 
