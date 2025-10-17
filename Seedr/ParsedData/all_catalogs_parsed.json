@@ -7897,7 +7897,7 @@
     "imageUrl": "/plant-images/d/dodecatheon-amethystinum_medium.jpg",
     "thumbnailUrl": "/plant-images/d/dodecatheon-amethystinum_thumb.jpg",
     "imageSource": "wikimedia",
-    "imageLicense": "CC BY-SA 2.0"
+    "imageLicense": "CC BY-SA 3.0"
   },
   {
     "CommonName": "",
@@ -46919,10 +46919,10 @@
     "Zone": 6,
     "PreTreatment": 1,
     "Germination": 0,
-    "imageUrl": "/plant-images/o/origanumdictamnus_medium.jpg",
-    "thumbnailUrl": "/plant-images/o/origanumdictamnus_thumb.jpg",
-    "imageSource": "wikimedia",
-    "imageLicense": "CC BY-SA 3.0"
+    "imageUrl": "",
+    "thumbnailUrl": "",
+    "imageSource": "",
+    "imageLicense": ""
   },
   {
     "CommonName": "",
