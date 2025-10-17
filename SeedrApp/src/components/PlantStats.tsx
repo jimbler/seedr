@@ -48,7 +48,7 @@ const StatCard: React.FC<StatCardProps> = ({ icon, value, label, color }) => (
   </Paper>
 );
 
-const PlantStats: React.FC<PlantStatsProps> = ({ plants, totalPlants }) => {
+const PlantStats: React.FC<PlantStatsProps> = React.memo(({ plants, totalPlants }) => {
   const stats = getPlantStats(plants);
   const commonNamePercentage = totalPlants > 0 ? Math.round((stats.withCommonNames / totalPlants) * 100) : 0;
 
@@ -124,6 +124,6 @@ const PlantStats: React.FC<PlantStatsProps> = ({ plants, totalPlants }) => {
       </CardContent>
     </Card>
   );
-};
+});
 
 export default PlantStats;

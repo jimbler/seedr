@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Container, Box, CircularProgress, Alert, Typography, Grid } from '@mui/material';
 import PlantList from '../components/PlantList';
 import PlantFilters from '../components/PlantFilters';
@@ -9,7 +9,6 @@ import { Plant, PlantFilters as PlantFiltersType } from '../types/Plant';
 
 const DatabasePage: React.FC = () => {
   const [plants, setPlants] = useState<Plant[]>([]);
-  const [filteredPlants, setFilteredPlants] = useState<Plant[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<PlantFiltersType>({
@@ -21,6 +20,7 @@ const DatabasePage: React.FC = () => {
     showFavoritesOnly: false,
     hasPhotos: false
   });
+  const [debouncedSearch, setDebouncedSearch] = useState<string>('');
 
   useEffect(() => {
     // Initialize favorites service
@@ -31,7 +31,6 @@ const DatabasePage: React.FC = () => {
         // Apply favorites status to plants
         const plantsWithFavorites = FavoritesService.applyFavoritesToPlants(data);
         setPlants(plantsWithFavorites);
-        setFilteredPlants(plantsWithFavorites);
         setLoading(false);
       })
       .catch(err => {
@@ -40,12 +39,22 @@ const DatabasePage: React.FC = () => {
       });
   }, []);
 
+  // Debounce search input with 300ms delay
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(filters.search);
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, [filters.search]);
+
+  // Memoize filtered plants calculation
+  const filteredPlants = useMemo(() => {
     let filtered = plants;
 
-    // Apply search filter
-    if (filters.search) {
-      const searchLower = filters.search.toLowerCase();
+    // Apply search filter (using debounced value)
+    if (debouncedSearch) {
+      const searchLower = debouncedSearch.toLowerCase();
       filtered = filtered.filter(plant => 
         plant.BotanicalName.toLowerCase().includes(searchLower) ||
         plant.CommonName.toLowerCase().includes(searchLower) ||
@@ -83,14 +92,14 @@ const DatabasePage: React.FC = () => {
       filtered = filtered.filter(plant => plant.imageUrl && plant.imageUrl.trim() !== '');
     }
 
-    setFilteredPlants(filtered);
-  }, [plants, filters]);
+    return filtered;
+  }, [plants, debouncedSearch, filters.family, filters.seasonality, filters.zone, filters.isArchived, filters.showFavoritesOnly, filters.hasPhotos]);
 
-  const handleFilterChange = (newFilters: Partial<PlantFiltersType>) => {
+  const handleFilterChange = useCallback((newFilters: Partial<PlantFiltersType>) => {
     setFilters(prev => ({ ...prev, ...newFilters }));
-  };
+  }, []);
 
-  const handleToggleFavorite = (plantId: string) => {
+  const handleToggleFavorite = useCallback((plantId: string) => {
     const isNowFavorite = FavoritesService.toggleFavorite(plantId);
     
     // Update the plants array to reflect the new favorite status
@@ -103,7 +112,7 @@ const DatabasePage: React.FC = () => {
         return plant;
       })
     );
-  };
+  }, []);
 
   if (loading) {
     return (

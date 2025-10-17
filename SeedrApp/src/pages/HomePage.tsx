@@ -37,13 +37,27 @@ const HomePage: React.FC = () => {
       {/* Hero Section */}
       <Box
         sx={{
-          background: 'linear-gradient(135deg, #3d6b1f 0%, #2d5016 100%)',
+          position: 'relative',
           color: 'white',
           py: 10,
           textAlign: 'center',
+          backgroundImage: 'url(/assets/utah_red_rock.jpeg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(45, 80, 22, 0.35)', // Dark green overlay for readability
+            zIndex: 1,
+          },
         }}
       >
-        <Container maxWidth="md">
+        <Container maxWidth="md" sx={{ position: 'relative', zIndex: 2 }}>
           <Box
             component="img"
             src="/assets/seedr_logo_only.png"
@@ -51,13 +65,28 @@ const HomePage: React.FC = () => {
             sx={{
               height: 120,
               mb: 3,
-              filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))',
+              filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))',
             }}
           />
-          <Typography variant="h2" component="h1" gutterBottom fontWeight={700}>
+          <Typography 
+            variant="h2" 
+            component="h1" 
+            gutterBottom 
+            fontWeight={700}
+            sx={{
+              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+            }}
+          >
             Welcome to Seedr
           </Typography>
-          <Typography variant="h5" sx={{ mb: 4, opacity: 0.95 }}>
+          <Typography 
+            variant="h5" 
+            sx={{ 
+              mb: 4, 
+              opacity: 0.95,
+              textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
+            }}
+          >
             Your comprehensive plant seed database for exploration and discovery
           </Typography>
           <Button
@@ -71,9 +100,11 @@ const HomePage: React.FC = () => {
               py: 1.5,
               fontSize: '1.1rem',
               fontWeight: 600,
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
               '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
                 transform: 'translateY(-2px)',
+                boxShadow: '0 6px 16px rgba(0, 0, 0, 0.4)',
               },
               transition: 'all 0.3s',
             }}

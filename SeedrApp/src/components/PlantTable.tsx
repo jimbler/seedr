@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Table,
   TableBody,
@@ -14,14 +14,17 @@ import {
   Typography,
   TableSortLabel,
   Avatar,
+  TablePagination,
+  Link,
 } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
-import { formatSeasonality, formatZone, formatPreTreatment, formatGermination } from '../services/plantService';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { formatSeasonality, formatZone, formatPreTreatment, formatGermination, formatFamily, shouldDisplayOrigin } from '../services/plantService';
 import { FavoritesService } from '../services/favoritesService';
-import { Plant } from '../types/Plant';
+import { Plant, ExternalCatalog } from '../types/Plant';
 import PlantImage from './PlantImage';
 
 interface PlantTableProps {
@@ -37,7 +40,7 @@ interface RowProps {
   onToggleFavorite: (plantId: string) => void;
 }
 
-const Row: React.FC<RowProps> = ({ plant, onToggleFavorite }) => {
+const Row: React.FC<RowProps> = React.memo(({ plant, onToggleFavorite }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const plantId = FavoritesService.getPlantId(plant);
 
@@ -78,7 +81,7 @@ const Row: React.FC<RowProps> = ({ plant, onToggleFavorite }) => {
           )}
         </TableCell>
         <TableCell>
-          <Typography variant="body2">{plant.Family}</Typography>
+          <Typography variant="body2">{formatFamily(plant.Family)}</Typography>
         </TableCell>
         <TableCell align="center">
           <Typography variant="body2">{formatZone(plant.Zone)}</Typography>
@@ -137,12 +140,14 @@ const Row: React.FC<RowProps> = ({ plant, onToggleFavorite }) => {
                       </Typography>
                       <Typography variant="body2">{plant.Size || 'N/A'}</Typography>
                     </Box>
-                    <Box>
-                      <Typography variant="caption" color="text.secondary">
-                        Origin:
-                      </Typography>
-                      <Typography variant="body2">{plant.Origin || 'N/A'}</Typography>
-                    </Box>
+                    {plant.Origin && shouldDisplayOrigin(plant.Origin) && (
+                      <Box>
+                        <Typography variant="caption" color="text.secondary">
+                          Origin:
+                        </Typography>
+                        <Typography variant="body2">{plant.Origin}</Typography>
+                      </Box>
+                    )}
                     <Box>
                       <Typography variant="caption" color="text.secondary">
                         Elevation:
@@ -163,6 +168,32 @@ const Row: React.FC<RowProps> = ({ plant, onToggleFavorite }) => {
                       </Typography>
                       <Typography variant="body2">{plant.WildOrigin ? 'Yes' : 'No'}</Typography>
                     </Box>
+                    {plant.ExternalCatalog === ExternalCatalog.AlPlains && (
+                      <Box>
+                        <Typography variant="caption" color="text.secondary">
+                          Catalog:
+                        </Typography>
+                        <Link
+                          href="https://www.alplains.com"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          sx={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 0.5,
+                            textDecoration: 'none',
+                            '&:hover': {
+                              textDecoration: 'underline',
+                            },
+                          }}
+                        >
+                          <Typography variant="body2" color="primary">
+                            AlPlains
+                          </Typography>
+                          <OpenInNewIcon sx={{ fontSize: 14 }} />
+                        </Link>
+                      </Box>
+                    )}
                   </Box>
 
                   <Typography variant="subtitle2" fontWeight={600} gutterBottom color="primary" sx={{ mt: 2 }}>
@@ -225,11 +256,13 @@ const Row: React.FC<RowProps> = ({ plant, onToggleFavorite }) => {
       </TableRow>
     </>
   );
-};
+});
 
-const PlantTable: React.FC<PlantTableProps> = ({ plants, onToggleFavorite }) => {
+const PlantTable: React.FC<PlantTableProps> = React.memo(({ plants, onToggleFavorite }) => {
   const [sortBy, setSortBy] = useState<SortField>('BotanicalName');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(50);
 
   const handleSortChange = (newSortBy: SortField) => {
     if (sortBy === newSortBy) {
@@ -240,7 +273,17 @@ const PlantTable: React.FC<PlantTableProps> = ({ plants, onToggleFavorite }) => 
     }
   };
 
-  const sortedPlants = [...plants].sort((a, b) => {
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const sortedPlants = useMemo(() => {
+    return [...plants].sort((a, b) => {
     let aValue = a[sortBy];
     let bValue = b[sortBy];
 
@@ -254,12 +297,19 @@ const PlantTable: React.FC<PlantTableProps> = ({ plants, onToggleFavorite }) => 
       bValue = bValue.toLowerCase();
     }
 
-    if (sortOrder === 'asc') {
-      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-    } else {
-      return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
-    }
-  });
+      if (sortOrder === 'asc') {
+        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+      } else {
+        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+      }
+    });
+  }, [plants, sortBy, sortOrder]);
+
+  // Get paginated plants
+  const paginatedPlants = useMemo(() => {
+    const startIndex = page * rowsPerPage;
+    return sortedPlants.slice(startIndex, startIndex + rowsPerPage);
+  }, [sortedPlants, page, rowsPerPage]);
 
   if (plants.length === 0) {
     return (
@@ -340,7 +390,7 @@ const PlantTable: React.FC<PlantTableProps> = ({ plants, onToggleFavorite }) => 
           </TableRow>
         </TableHead>
         <TableBody>
-          {sortedPlants.map((plant) => (
+          {paginatedPlants.map((plant) => (
             <Row
               key={FavoritesService.getPlantId(plant)}
               plant={plant}
@@ -349,8 +399,21 @@ const PlantTable: React.FC<PlantTableProps> = ({ plants, onToggleFavorite }) => 
           ))}
         </TableBody>
       </Table>
+      <TablePagination
+        rowsPerPageOptions={[25, 50, 100]}
+        component="div"
+        count={sortedPlants.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        sx={{
+          borderTop: 1,
+          borderColor: 'divider',
+        }}
+      />
     </TableContainer>
   );
-};
+});
 
 export default PlantTable;

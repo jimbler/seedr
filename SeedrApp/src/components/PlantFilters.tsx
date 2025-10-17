@@ -31,7 +31,7 @@ interface PlantFiltersProps {
   onFilterChange: (newFilters: Partial<PlantFiltersType>) => void;
 }
 
-const PlantFilters: React.FC<PlantFiltersProps> = ({ plants, filters, onFilterChange }) => {
+const PlantFilters: React.FC<PlantFiltersProps> = React.memo(({ plants, filters, onFilterChange }) => {
   const families = getUniqueFamilies(plants);
   const seasonalities = getUniqueSeasonalities(plants);
   const zones = getUniqueZones(plants);
@@ -226,6 +226,6 @@ const PlantFilters: React.FC<PlantFiltersProps> = ({ plants, filters, onFilterCh
       </CardContent>
     </Card>
   );
-};
+});
 
 export default PlantFilters;

@@ -14,7 +14,18 @@ export const loadPlantData = async (): Promise<Plant[]> => {
     }
     
     const data: Plant[] = await response.json();
-    return data;
+    
+    // Filter out plants without a botanical name
+    const filteredData = data.filter(plant => 
+      plant.BotanicalName && plant.BotanicalName.trim() !== ''
+    );
+    
+    // Log how many plants were filtered out for debugging
+    if (data.length !== filteredData.length) {
+      console.log(`Filtered out ${data.length - filteredData.length} plants without botanical names`);
+    }
+    
+    return filteredData;
   } catch (error) {
     console.error('Error loading plant data:', error);
     throw new Error('Unable to load plant data. Please ensure the data file is available.');
@@ -63,7 +74,7 @@ export const formatSeasonality = (seasonality: number): string => {
 };
 
 export const formatZone = (zone: number): string => {
-  return zone === Zone.Default ? 'Default' : `Zone ${zone}`;
+  return zone === Zone.Default ? 'N/A' : `Zone ${zone}`;
 };
 
 export const formatPreTreatment = (preTreatment: number): string => {
@@ -91,4 +102,17 @@ export const formatGermination = (germination: number): string => {
     [Germination.Orchids]: 'Orchid Seeds'
   };
   return germinationMap[germination] || 'Unknown';
+};
+
+export const formatFamily = (family: string): string => {
+  // Return N/A if family is blank or doesn't end with "ae"
+  if (!family || family.trim() === '' || !family.endsWith('ae')) {
+    return 'N/A';
+  }
+  return family;
+};
+
+export const shouldDisplayOrigin = (origin: string): boolean => {
+  // Don't display origin if it contains "..."
+  return Boolean(origin) && !origin.includes('...');
 };

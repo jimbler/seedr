@@ -10,13 +10,15 @@ import {
   Box,
   Divider,
   Stack,
+  Link,
 } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { formatSeasonality, formatZone, formatPreTreatment, formatGermination } from '../services/plantService';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { formatSeasonality, formatZone, formatPreTreatment, formatGermination, formatFamily, shouldDisplayOrigin } from '../services/plantService';
 import { FavoritesService } from '../services/favoritesService';
-import { Plant } from '../types/Plant';
+import { Plant, ExternalCatalog } from '../types/Plant';
 import PlantImage from './PlantImage';
 
 interface PlantCardProps {
@@ -24,7 +26,7 @@ interface PlantCardProps {
   onToggleFavorite: (plantId: string) => void;
 }
 
-const PlantCard: React.FC<PlantCardProps> = ({ plant, onToggleFavorite }) => {
+const PlantCard: React.FC<PlantCardProps> = React.memo(({ plant, onToggleFavorite }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   const toggleExpanded = () => {
@@ -119,7 +121,7 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant, onToggleFavorite }) => {
               Family:
             </Typography>
             <Typography variant="body2" fontWeight={500}>
-              {plant.Family}
+              {formatFamily(plant.Family)}
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -198,6 +200,32 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant, onToggleFavorite }) => {
                 </Typography>
                 <Typography variant="body2">{plant.WildOrigin ? 'Yes' : 'No'}</Typography>
               </Box>
+              {plant.ExternalCatalog === ExternalCatalog.AlPlains && (
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Typography variant="body2" color="text.secondary">
+                    Catalog:
+                  </Typography>
+                  <Link
+                    href="https://www.alplains.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 0.5,
+                      textDecoration: 'none',
+                      '&:hover': {
+                        textDecoration: 'underline',
+                      },
+                    }}
+                  >
+                    <Typography variant="body2" color="primary">
+                      AlPlains
+                    </Typography>
+                    <OpenInNewIcon sx={{ fontSize: 14 }} />
+                  </Link>
+                </Box>
+              )}
             </Stack>
           </Box>
 
@@ -222,7 +250,7 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant, onToggleFavorite }) => {
                   {formatGermination(plant.Germination)}
                 </Typography>
               </Box>
-              {plant.Origin && (
+              {plant.Origin && shouldDisplayOrigin(plant.Origin) && (
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Typography variant="body2" color="text.secondary">
                     Origin:
@@ -287,6 +315,6 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant, onToggleFavorite }) => {
       </Collapse>
     </Card>
   );
-};
+});
 
 export default PlantCard;
